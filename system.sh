@@ -1,17 +1,21 @@
 #!/bin/sh
 set -eu
 
-[ "$(id -u)" -eq 0 ] || { echo "Must be root" >&2; exit 1; }
+[ "$(id -u)" -eq 0 ] || { echo "[dotfile] must be root" >&2; exit 1; }
 
 freebsd() {
   PACKAGES="cowsay sl doas zsh"
-  echo "====> Installing Packages"
+  echo "[dotfile] installing packages"
   pkg install -y $PACKAGES
+
+  echo "[dotfile] setting up procfs"
+  grep --quiet --extended-regexp '^[^#]*[[:space:]]/proc[[:space:]]' /etc/fstab \
+  || printf 'proc\t/proc\tprocfs\trw\t0\t0\n' >> /etc/fstab
+  [ -e /proc/curproc ] || mount /proc
 }
 
 fedora() {
   PACKAGES="cowsay sl zsh"
-  echo "====> Installing Packages"
   dnf install -y $PACKAGES
 }
 
@@ -24,5 +28,5 @@ esac
 case $OS in
   freebsd) freebsd;;
   fedora) fedora;;
-  *) echo Not supported OS >&2; exit 1;;
+  *) echo "[dotfile] not supported OS" >&2; exit 1;;
 esac
