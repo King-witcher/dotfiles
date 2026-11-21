@@ -4,13 +4,13 @@ set -eu
 [ "$(id -u)" -eq 0 ] || { echo "Must be root" >&2; exit 1; }
 
 freebsd() {
-  PACKAGES=cowsay sl doas zsh
+  PACKAGES="cowsay sl doas zsh"
   echo "====> Installing Packages"
-  env pkg  -y $PACKAGES
+  pkg install -y $PACKAGES
 }
 
 fedora() {
-  PACKAGES=cowsay sl zsh
+  PACKAGES="cowsay sl zsh"
   echo "====> Installing Packages"
   dnf install -y $PACKAGES
 }
